@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <style>
+      #video1{
+        width: 300px;
+        height: 300px;
+      }
+    </style>
+    <video id="video1" autoplay></video>
+    <button id="startVideo1">Start Video</button>
+    <button id="stopVideo1">Stop Video</button>
+
+    <script>
+      const constraints = {
+        audio: false,
+        video: true
+      };
+
+      let stream;
+
+      document.querySelector('#startVideo1').addEventListener('click', () => {
+        navigator.mediaDevices.getUserMedia(constraints).then(_stream => {
+          stream = _stream;
+          const videoDom = document.querySelector('#video1');
+          const videoTracks = stream.getVideoTracks();
+          console.log(`Using video device: ${videoTracks[0].label}`);
+          videoDom.srcObject = stream;
+        }).catch(err => {
+          console.error(err);
+        });
+      })
+
+      document.querySelector('#stopVideo1').addEventListener('click', () => {
+        if(!stream || stream.getTracks().legth === 0){
+          return;
+        }
+        stream.getTracks().forEach(track => track.stop());
+      })
+      </script>
+  </body>
+</html>
